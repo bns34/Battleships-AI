@@ -1,7 +1,8 @@
-const { generateShips, validateShipPlacement } = ('./ships')
+const { generateShips, validateShipPlacement } = require('./ships');
+const { aiMoveEasy } = require('./ai');
 
 
-export class Board {
+class Board {
     constructor() {
         this.grid = this.createEmptyGrid();
         this.ships = [];
@@ -13,8 +14,9 @@ export class Board {
     }
 }
 
-export class Game {
+class Game {
     constructor(difficulty = "easy") {
+        this.gridSize = 10;
         this.difficulty = difficulty;
         this.playerBoard = new Board(); // Player's board
         this.aiBoard = new Board(); // AI's board
@@ -53,7 +55,11 @@ export class Game {
     }
 
     // Function for player placing a ship
-    placePlayerShip(ship, startRow, startCol, orientation) {
+    placeShip(shipType, startRow, startCol, orientation) {
+        const ships = generateShips();
+        const ship = ships.find(s => s.name.toLowerCase() === shipType.toLowerCase());
+        if (!ship) return { success: false, message: "Invalid ship type" };
+
         const valid = validateShipPlacement(ship.size, startRow, startCol, orientation, this.playerBoard.grid); // Validate the ship placement
         if (!valid) return { success: false, message: "Invalid ship placement" }; // Return both a boolean flag and a message
 
@@ -93,11 +99,11 @@ export class Game {
 
         const { row, col } = move;
         let result = "miss";
-        if (this.playerBoard[row][col] === 1) { // Indicates a ship is present
-            this.playerBoard[row][col] = "hit"; // Mark the grid square as hit
+        if (this.playerBoard.grid[row][col] === 1) { // Indicates a ship is present
+            this.playerBoard.grid[row][col] = "hit"; // Mark the grid square as hit
             result = "hit";
         } else {
-            this.playerBoard[row][col] = "miss";
+            this.playerBoard.grid[row][col] = "miss";
         }
 
         this.isPlayerTurn = true;
@@ -121,3 +127,5 @@ export class Game {
         return true;
     }
 }
+
+module.exports = { Board, Game };

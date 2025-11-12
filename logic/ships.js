@@ -1,4 +1,4 @@
-export function validateShipPlacement(size, startRow, startCol, orientation, grid) {
+function validateShipPlacement(size, startRow, startCol, orientation, grid) {
   const gridSize = grid.length;
 
   if (orientation === "H" && startCol + size > gridSize) return false;
@@ -16,7 +16,7 @@ export function validateShipPlacement(size, startRow, startCol, orientation, gri
 
 
 
-export default class Ship {
+class Ship {
   constructor(name, size, status = 0) {
     this.name = name;
     this.size = size;
@@ -24,7 +24,7 @@ export default class Ship {
   }
 }
 
-export function generateShips() {
+function generateShips() {
   return [
     new Ship("Carrier", 5),
     new Ship("Battleship", 4),
@@ -33,4 +33,9 @@ export function generateShips() {
     new Ship("Destroyer", 2)
   ];
 }
+
+module.exports = { validateShipPlacement, Ship, generateShips };
+
+
+
 
