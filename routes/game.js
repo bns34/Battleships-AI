@@ -4,12 +4,28 @@ const {Game} = require('../logic/game.js');
 const app = express.Router();
 let games = {}; // Store active games in memory
 
-app.post('/start-game', (req, res) => {
-  const difficulty = req.body.difficulty || 'easy'; // Use easy as a default difficulty incase none is specified
-  const gameId = Date.now().toString(); // Unique ID based on current timestamp. Not suitable long-term, but will work for now
+function validateDifficultyString(difficulty){
+    const validDifficulties = ['easy', 'medium', 'hard']; // Currently only easy is implemented
+    return validDifficulties.includes(difficulty);
+}
 
-  games[gameId] = new Game(difficulty);
-  res.json({ gameId, message: 'Game started' });
+app.post('/start-game', (req, res) => {
+    try {
+        console.log(req.body.difficulty)
+        const difficulty = req.body.difficulty || 'easy'; // Use easy as a default difficulty incase none is specified
+        console.log(difficulty)
+        console.log(`Is valid: ${validateDifficultyString(difficulty)}`)
+        if (!validateDifficultyString(difficulty)) {
+            return res.status(400).json({ error: "Invalid difficulty level" });
+        }
+        const gameId = Date.now().toString(); // Unique ID based on current timestamp. Not suitable long-term, but will work for now
+
+        games[gameId] = new Game(difficulty);
+        return res.json({ gameId, message: 'Game started' });
+    } catch (error) {
+        console.error('Error starting game:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 app.post('/place-ship', (req, res) => { // Endpoint used when the player places their ships
