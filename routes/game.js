@@ -34,6 +34,9 @@ app.post('/place-ship', (req, res) => { // Endpoint used when the player places 
   if (!game) return res.status(404).json({ error: "Game not found" }); // Return 404 if the game ID is invalid
 
   const result = game.placeShip(shipType, startRow, startCol, orientation); // Call the placeShip method
+  if (!result.success) {
+    return res.status(400).json({ error: result.message }); // Return 400 if something is wrong
+  }
   res.json(result);
   console.log(`Boards:\nPlayer Board: ${JSON.stringify(game.playerBoard)}\nAI Board: ${JSON.stringify(game.aiBoard)}`);
 });
