@@ -53,7 +53,7 @@ app.post("/player-move", (req, res) => { // Endpoint used when the player makes 
     const aiResult = game.aiMove(); 
     return res.json({ playerResult: result, aiResult });
   }
-  res.json(result); // This happens if the game is over. Result contains the move result and also the gameOver status
+  res.json({ playerResult: result, aiResult: null }); // This happens if the game is over. Result contains the move result and also the gameOver status
 });
 
 module.exports = app;

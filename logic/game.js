@@ -49,16 +49,23 @@ class Game {
     // Function for placing ships on the grid
     placeShipOnGrid(size, startRow, startCol, orientation, grid) {
         for (let i = 0; i < size; i++) { // For each grid cell the ship occupies
-        if (orientation === "H") grid[startRow][startCol + i] = 1; // Set to 1 to indicate there is a ship
-        else grid[startRow + i][startCol] = 1;
+            if (orientation === "H") grid[startRow][startCol + i] = 1; // Set to 1 to indicate there is a ship
+            else grid[startRow + i][startCol] = 1;
         }
     }
 
     // Function for player placing a ship
     placeShip(shipType, startRow, startCol, orientation) {
         const ships = generateShips();
-        const ship = ships.find(s => s.name.toLowerCase() === shipType.toLowerCase());
+        const ship = ships.find(s => s.name.toLowerCase() === shipType?.toLowerCase()); // Use lowercase incase of case differences
         if (!ship) return { success: false, message: "Invalid ship type" };
+
+        if(orientation !== "H" && orientation !== "V") {
+            return { success: false, message: "Invalid orientation" };
+        }
+        if(startRow < 0 || startRow >= this.gridSize || startCol < 0 || startCol >= this.gridSize) {
+            return { success: false, message: "Invalid co-ordinate" };
+        }
 
         const valid = validateShipPlacement(ship.size, startRow, startCol, orientation, this.playerBoard.grid); // Validate the ship placement
         if (!valid) return { success: false, message: "Invalid ship placement" }; // Return both a boolean flag and a message
