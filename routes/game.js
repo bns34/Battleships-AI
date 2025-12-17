@@ -71,4 +71,23 @@ app.post("/ai-move", (req, res) => { // Endpoint used to get the AI's move - mai
     res.json({ aiResult: result }); // Return the AI's move result
 });
 
+app.get("/check-game-over", (req, res) => { // Endpoint to check if the game is over
+    const { gameId } = req.query;
+    const game = games[gameId];
+    if (!game) return res.status(404).json({ error: "Game not found" });
+
+    if(game.gameOver) { // If the game is already over, return the winner
+        return res.json({ gameOver: true, winner: game.winner });
+    }
+
+    if (game.checkGameOver(game.aiBoard.grid)) { // Check if all AI ships are sunk
+        this.gameOver = true;
+        this.winner = "Player";
+    } else if (game.checkGameOver(game.playerBoard.grid)) { // Check if all player ships are sunk
+        this.gameOver = true;
+        this.winner = "AI";
+    }
+
+    res.json({ gameOver: game.gameOver, winner: game.winner });
+});
 module.exports = app;
