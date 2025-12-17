@@ -1,7 +1,10 @@
 function aiMoveEasy(grid) {
+    console.log("grid:", grid);
     let row = Math.floor(Math.random() * grid.length); // Choose a random row
     let col = Math.floor(Math.random() * grid.length); // Choose a random column
     // While the chosen grid square has already been attacked, repeat the random selection
+    console.log(`AI selecting row ${row}, col ${col}`);
+    console.log(grid[row][col]);
     while (grid[row][col] === "hit" || grid[row][col] === "miss") {
         row = Math.floor(Math.random() * grid.length);
         col = Math.floor(Math.random() * grid.length);
