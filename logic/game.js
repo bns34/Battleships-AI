@@ -78,6 +78,13 @@ class Game {
     // Function to process player move
     processPlayerMove(row, col) {
         if (!this.isPlayerTurn) return { error: "Not player's turn" }; // Prevent player from making two moves in a row
+        console.log(`Player attacking row ${row}, col ${col}`);
+
+        // Check if row or column is out of range
+        if (row < 0 || row >= this.gridSize || col < 0 || col >= this.gridSize) {
+            return { error: "Invalid coordinates" };
+        }
+
         if (this.aiBoard.grid[row][col] === "hit" || this.aiBoard.grid[row][col] === "miss") { // Prevent attacking the same grid square twice
             return { error: "Cell already attacked" }; // Return a error message to the client
         }
