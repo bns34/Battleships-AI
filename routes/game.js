@@ -90,4 +90,30 @@ app.get("/check-game-over", (req, res) => { // Endpoint to check if the game is 
 
     res.json({ gameOver: game.gameOver, winner: game.winner });
 });
+
+app.get("/get-game-state", (req, res) => { // Endpoint to retrieve the current game state
+    /* This endpoint will return:
+        masked AI grid
+        full player grid
+        correct turn
+        correct gameOver flag
+    */
+    const { gameId } = req.query;
+    const game = games[gameId];
+    if (!game) return res.status(404).json({ error: "Game not found" });
+
+    // Mask the AI grid to hide remaining ships
+    const maskedAIBoard = game.aiBoard.grid.map(row => 
+        row.map(cell => (cell === 1 ? 0 : cell)) // Replaces existing ships with empty spaces (0)
+    );
+
+    res.json({
+        playerBoard: game.playerBoard.grid,
+        aiBoard: maskedAIBoard,
+        isPlayerTurn: game.isPlayerTurn,
+        gameOver: game.gameOver,
+        winner: game.winner
+    });
+});
+
 module.exports = app;
