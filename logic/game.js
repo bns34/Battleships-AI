@@ -98,7 +98,7 @@ class Game {
         }
 
         this.isPlayerTurn = false; // Set the player turn to false, indicating it's the AI's turn
-        if (this.checkGameOver(this.aiBoard)) { // Check if all AI ships are sunk
+        if (this.checkGameOver(this.aiBoard.grid)) { // Check if all AI ships are sunk
             this.gameOver = true;
             this.winner = "Player";
         }
@@ -109,7 +109,7 @@ class Game {
     // Function to process AI moves
     aiMove() {
         if (this.gameOver) return { result: "Game already over" }; // Make sure AI doesn't move if game is over
-        const move = aiMoveEasy(this.playerBoard); // Returns a row and column
+        const move = aiMoveEasy(this.playerBoard.grid); // Returns a row and column
 
         const { row, col } = move;
         let result = "miss";
@@ -121,7 +121,7 @@ class Game {
         }
 
         this.isPlayerTurn = true;
-        if (this.checkGameOver(this.playerBoard)) { // Check if all player ships are sunk
+        if (this.checkGameOver(this.playerBoard.grid)) { // Check if all player ships are sunk
             this.gameOver = true;
             this.winner = "AI";
         }
