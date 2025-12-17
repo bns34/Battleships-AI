@@ -59,6 +59,16 @@ app.post("/player-move", (req, res) => { // Endpoint used when the player makes 
     res.json({ playerResult: result, aiResult: null }); // This happens if the game is over. Result contains the move result and also the gameOver status
 });
 
+app.post("/ai-move", (req, res) => { // Endpoint used to get the AI's move - mainly for testing purposes
+    const { gameId } = req.body;
+    const game = games[gameId];
+    if (!game) return res.status(404).json({ error: "Game not found" });
+
+    const result = game.aiMove(); // Process the AI's move
+    if (result.error) {
+        return res.status(400).json({ error: result.error }); // Return 400 if there was an error
+    }
+    res.json({ aiResult: result }); // Return the AI's move result
 });
 
 module.exports = app;
