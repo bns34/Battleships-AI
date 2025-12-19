@@ -83,9 +83,11 @@ app.get("/check-game-over", (req, res) => { // Endpoint to check if the game is 
     if (game.checkGameOver(game.aiBoard.grid)) { // Check if all AI ships are sunk
         this.gameOver = true;
         this.winner = "Player";
+        this.updateStats(); // Update stats if game is over
     } else if (game.checkGameOver(game.playerBoard.grid)) { // Check if all player ships are sunk
         this.gameOver = true;
         this.winner = "AI";
+        this.updateStats(); // Update stats if game is over
     }
 
     res.json({ gameOver: game.gameOver, winner: game.winner });
@@ -114,6 +116,12 @@ app.get("/get-game-state", (req, res) => { // Endpoint to retrieve the current g
         gameOver: game.gameOver,
         winner: game.winner
     });
+});
+
+
+app.get("/stats", (req, res) => { // Endpoint to retrieve game statistics
+    const stats = getStats(); // Retrieve stats using the function in stats.js
+    res.json(stats);
 });
 
 module.exports = app;
