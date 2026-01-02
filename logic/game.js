@@ -1,6 +1,6 @@
 const { generateShips, validateShipPlacement } = require('./ships');
 const { aiMoveEasy } = require('./ai');
-const fs = require('fs');
+const { updateStats } = require('./stats');
 
 
 class Board {
@@ -103,7 +103,7 @@ class Game {
         if (this.checkGameOver(this.aiBoard.grid)) { // Check if all AI ships are sunk
             this.gameOver = true;
             this.winner = "Player";
-            this.updateStats(); // Update stats if game is over
+            updateStats(this); // Update stats if game is over
         }
 
         return { result, gameOver: this.gameOver }; // Return the result of the move and also whether or not the game is over
@@ -127,7 +127,7 @@ class Game {
         if (this.checkGameOver(this.playerBoard.grid)) { // Check if all player ships are sunk
             this.gameOver = true;
             this.winner = "AI";
-            this.updateStats(); // Update stats if game is over
+            updateStats(this); // Update stats if game is over
         }
 
         return { row, col, result, gameOver: this.gameOver }; // Return the AI's move to the client
