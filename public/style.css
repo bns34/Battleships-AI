@@ -1,0 +1,36 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+td {
+  width: 30px;
+  height: 30px;
+  border: 1px solid black;
+  text-align: center;
+  cursor: pointer;
+}
+
+.water {
+  background-color: #cce6ff;
+}
+
+.ship {
+  background-color: #999;
+}
+
+.hit {
+  background-color: red;
+}
+
+.miss {
+  background-color: white;
+}
+
+.boards {
+  display: flex;
+  gap: 40px;
+}
