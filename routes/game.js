@@ -1,5 +1,7 @@
 const express = require('express');
 
+const { getStats } = require('../logic/stats.js');
+
 const {Game} = require('../logic/game.js');
 const app = express.Router();
 let games = {}; // Store active games in memory
@@ -83,11 +85,11 @@ app.get("/check-game-over", (req, res) => { // Endpoint to check if the game is 
     if (game.checkGameOver(game.aiBoard.grid)) { // Check if all AI ships are sunk
         this.gameOver = true;
         this.winner = "Player";
-        this.updateStats(); // Update stats if game is over
+        updateStats(game); // Update stats if game is over
     } else if (game.checkGameOver(game.playerBoard.grid)) { // Check if all player ships are sunk
         this.gameOver = true;
         this.winner = "AI";
-        this.updateStats(); // Update stats if game is over
+        updateStats(game); // Update stats if game is over
     }
 
     res.json({ gameOver: game.gameOver, winner: game.winner });
