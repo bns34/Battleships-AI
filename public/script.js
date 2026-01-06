@@ -54,7 +54,7 @@ function renderBoard(table, grid, isEnemy) {
             }
 
             // Attacking AI (only after placement)
-            if (isEnemy && !placementStage && value === null) {
+            if (isEnemy && !placementStage && value === 0) {
                 // Attach an event listener to each cell for attacking
                 cell.addEventListener("click", () => playerMove(r, c));
             }
@@ -132,10 +132,10 @@ async function placeShip(row, col) {
     placedShips.add(shipName);
     statusEl.textContent = `${shipName} placed`;
 
-    await updateGameState();
-
     if (placedShips.size === Object.keys(ships).length) {
         placementStage = false;
         document.getElementById("placementStatus").textContent = "All ships placed.";
     }
+
+    await updateGameState();
 }
