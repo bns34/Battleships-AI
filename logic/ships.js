@@ -4,12 +4,26 @@ function validateShipPlacement(size, startRow, startCol, orientation, grid) {
   if (orientation === "H" && startCol + size > gridSize) return false;
   if (orientation === "V" && startRow + size > gridSize) return false;
 
-  // At this point, the ship is within the bounds of the grid but may overlap other ships still
-
-  for (let i = 0; i < size; i++) { // Check each grid square to see if it's already occupied by a ship
-    if (orientation === "H" && grid[startRow][startCol + i] !== 0) return false;
-    if (orientation === "V" && grid[startRow + i][startCol] !== 0) return false;
+  // Check the area including the ship and its adjacent cells to prevent touching
+  let minRow, maxRow, minCol, maxCol;
+  if (orientation === "H") {
+    minRow = Math.max(0, startRow - 1);
+    maxRow = Math.min(gridSize - 1, startRow + 1);
+    minCol = Math.max(0, startCol - 1);
+    maxCol = Math.min(gridSize - 1, startCol + size);
+  } else { // Vertical
+    minRow = Math.max(0, startRow - 1);
+    maxRow = Math.min(gridSize - 1, startRow + size);
+    minCol = Math.max(0, startCol - 1);
+    maxCol = Math.min(gridSize - 1, startCol + 1);
   }
+
+  for (let r = minRow; r <= maxRow; r++) {
+    for (let c = minCol; c <= maxCol; c++) {
+      if (grid[r][c] !== 0) return false;
+    }
+  }
+
   // Ship placement valid
   return true;
 }
