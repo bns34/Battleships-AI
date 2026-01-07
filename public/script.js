@@ -6,6 +6,39 @@ const aiBoardEl = document.getElementById("aiBoard");
 const statusEl = document.getElementById("status"); // Status element for messages about game state etc
 
 document.getElementById("startGameBtn").addEventListener("click", startGame);
+document.getElementById("playBtn").addEventListener("click", showPlay);
+document.getElementById("statsBtn").addEventListener("click", showStats);
+
+// Show the main game page (shown by default)
+function showPlay() {
+    document.getElementById("play-page").style.display = "block";
+    document.getElementById("stats-page").style.display = "none";
+}
+
+// Show the stats page
+function showStats() {
+    document.getElementById("play-page").style.display = "none";
+    document.getElementById("stats-page").style.display = "block";
+    loadStats(); // Dont really need to await it because nothing requires the results
+}
+
+async function loadStats() {
+    const res = await fetch("/api/game/stats");
+    const stats = await res.json();
+
+    const gamesPlayedCounter = document.getElementById("games-played-counter");
+    const playerWinsCounter = document.getElementById("player-wins-counter");
+    const aiWinsCounter = document.getElementById("ai-wins-counter");
+    const winRateDisplay = document.getElementById("win-rate");
+    const avgGameTimeDisplay = document.getElementById("avg-game-time");
+
+    const winRate = stats.gamesPlayed > 0 ? ((stats.wins / stats.gamesPlayed) * 100).toFixed(2) : 0;
+    gamesPlayedCounter.textContent = `Games Played: ${stats.gamesPlayed}`;
+    playerWinsCounter.textContent = `Player Wins: ${stats.wins || 0}`;
+    aiWinsCounter.textContent = `AI Wins: ${stats.losses || 0}`;
+    winRateDisplay.textContent = `Win Rate: ${winRate}%`;
+    avgGameTimeDisplay.textContent = `Average Game Time: ${stats.averageTime.toFixed(2)} seconds`; // Limits to 2 decimal places
+}
 
 async function startGame() {
     const res = await fetch("/api/game/start-game", {

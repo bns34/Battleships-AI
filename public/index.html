@@ -9,47 +9,70 @@
 
 <body>
 
-    <h1>Battleships</h1>
-
-    <button id="startGameBtn">Start Game</button>
-
-    <p id="status">Status: Not started</p>
-
-    <div id="placementControls">
-        <h2>Place Your Ships</h2>
-
-        <label>
-            Ship:
-            <select id="shipSelect">
-                <option value="Carrier">Carrier (5)</option>
-                <option value="Battleship">Battleship (4)</option>
-                <option value="Cruiser">Cruiser (3)</option>
-                <option value="Submarine">Submarine (3)</option>
-                <option value="Destroyer">Destroyer (2)</option>
-            </select>
-        </label>
-
-        <label>
-            Orientation:
-            <select id="orientationSelect">
-                <option value="horizontal">Horizontal</option>
-                <option value="vertical">Vertical</option>
-            </select>
-        </label>
-
-        <p id="placementStatus">Place all ships to begin.</p>
+    <div id="sidebar">
+        <button id="playBtn">Play Game</button>
+        <button id="statsBtn">Statistics</button>
     </div>
 
+    <div id="main-content">
+        <div id="play-page">
+            <h1>Battleships</h1>
 
-    <div class="boards">
-        <div>
-            <h2>Your Board</h2>
-            <table id="playerBoard"></table>
+            <div class="top-controls">
+
+                <button id="startGameBtn">Start Game</button>
+
+                <p id="status">Status: Not started</p>
+
+                <div id="placementControls">
+                    <h2>Place Your Ships</h2>
+
+                    <label>
+                        Ship:
+                        <select id="shipSelect">
+                            <option value="Carrier">Carrier (5)</option>
+                            <option value="Battleship">Battleship (4)</option>
+                            <option value="Cruiser">Cruiser (3)</option>
+                            <option value="Submarine">Submarine (3)</option>
+                            <option value="Destroyer">Destroyer (2)</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        Orientation:
+                        <select id="orientationSelect">
+                            <option value="horizontal">Horizontal</option>
+                            <option value="vertical">Vertical</option>
+                        </select>
+                    </label>
+
+                    <p id="placementStatus">Place all ships to begin.</p>
+                </div>
+
+            </div>
+
+            <div class="boards">
+                <div>
+                    <h2>Your Board</h2>
+                    <table id="playerBoard"></table>
+                </div>
+
+                <div>
+                    <h2>Enemy Board</h2>
+                    <table id="aiBoard"></table>
+                </div>
+            </div>
         </div>
 
-        <div>
-            <h2>Enemy Board</h2>
-            <table id="aiBoard"></table>
+        <div id="stats-page" style="display: none;">
+            <h1>Statistics</h1>
+            <div id="stats-display">
+                <p id="games-played-counter"></p>
+                <p id="player-wins-counter"></p>
+                <p id="ai-wins-counter"></p>
+                <p id="win-rate"></p>
+                <p id="avg-game-time"></p>
+            </div>
         </div>
     </div>
 
