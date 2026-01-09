@@ -50,8 +50,11 @@ async function startGame() {
     const data = await res.json();
     gameId = data.gameId;
     statusEl.textContent = "Game started";
+    gameOver = false;
     await updateGameState();
 }
+
+let gameOver = false;
 
 async function updateGameState() {
     const res = await fetch(`/api/game/get-game-state?gameId=${gameId}`);
@@ -62,6 +65,7 @@ async function updateGameState() {
 
     if (data.gameOver) {
         statusEl.textContent = `Game Over. Winner: ${data.winner}`;
+        gameOver = true;
     }
 }
 
@@ -101,6 +105,7 @@ function renderBoard(table, grid, isEnemy) {
 
 
 async function playerMove(row, col) {
+    if (gameOver) return;
     const res = await fetch("/api/game/player-move", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
