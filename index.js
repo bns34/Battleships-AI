@@ -14,10 +14,10 @@ app.use('/api/game', gameRoutes);
 
 // Endpoint for testing connectivity
 app.get('/api/ping', (req, res) => {
-  res.send('Pong');
+    res.send('Pong');
 });
 
 
 app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+    console.log(`Server running on port ${port}`);
 });
