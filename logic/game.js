@@ -16,7 +16,7 @@ class Board {
 }
 
 class Game {
-    constructor(difficulty = "easy") {
+    constructor(difficulty = "easy", playerID = null) {
         this.gridSize = 10;
         this.difficulty = difficulty;
         this.playerBoard = new Board(); // Player's board
@@ -25,6 +25,7 @@ class Game {
         this.gameOver = false;
         this.winner = null;
         this.startedAt = new Date();
+        this.playerID = playerID; // Store player ID for keeping stats separate
 
         this.placeAIShips();
     }

@@ -1,5 +1,6 @@
 let gameId = null;
 const gridSize = 10;
+let currentPlayerID = null;
 
 const playerBoardEl = document.getElementById("playerBoard");
 const aiBoardEl = document.getElementById("aiBoard");
@@ -8,6 +9,86 @@ const statusEl = document.getElementById("status"); // Status element for messag
 document.getElementById("startGameBtn").addEventListener("click", startGame);
 document.getElementById("playBtn").addEventListener("click", showPlay);
 document.getElementById("statsBtn").addEventListener("click", showStats);
+document.getElementById("updateNameBtn").addEventListener("click", updatePlayerName);
+
+// Initialise player when the page loads
+window.addEventListener("DOMContentLoaded", async () => {
+    await initialisePlayer();
+});
+
+// Initialise or load player
+async function initialisePlayer() {
+    const storedPlayerID = localStorage.getItem("playerID");
+    if (storedPlayerID) { // Load an existing player
+        try {
+            const res = await fetch(`/api/game/player?playerID=${storedPlayerID}`);
+            if (res.ok) {
+                const player = await res.json();
+                currentPlayerID = player.PlayerID;
+                document.getElementById("playerNameInput").value = player.DisplayName;
+                document.getElementById("playerNameStatus").textContent = `${player.DisplayName} loaded`;
+                return;
+            }
+        } catch (error) {
+            console.error("Error loading player:", error);
+        }
+    }
+    
+    // If the user hasnt played before, create a new guest player
+    await createNewPlayer("Player" + Math.floor(Math.random() * 1000)); // Use a 3 digit random number to reduce chances of clashes
+}
+
+// Create a new player
+async function createNewPlayer(displayName) {
+    try {
+        const res = await fetch("/api/game/create-player", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({displayName})
+        });
+        
+        const data = await res.json();
+        if (res.ok) {
+            currentPlayerID = data.playerID;
+            localStorage.setItem("playerID", currentPlayerID);
+            document.getElementById("playerNameInput").value = data.displayName;
+            document.getElementById("playerNameStatus").textContent = `Player created: ${data.displayName}`;
+        } else {
+            document.getElementById("playerNameStatus").textContent = data.error || "Error creating player";
+        }
+    } catch (error) {
+        console.error("Error creating player:", error);
+        document.getElementById("playerNameStatus").textContent = "Error creating player";
+    }
+}
+
+// Update player name
+async function updatePlayerName() {
+    const newName = document.getElementById("playerNameInput").value.trim();
+    
+    if (!newName || newName.length < 3 || newName.length > 50) {
+        document.getElementById("playerNameStatus").textContent = "Name invalid";
+        return;
+    }
+    
+    try {
+        const res = await fetch("/api/game/update-player-name", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ playerID: currentPlayerID, displayName: newName })
+        });
+        
+        const data = await res.json();
+        if (res.ok) {
+            document.getElementById("playerNameStatus").textContent = `Name updated to: ${data.displayName}`;
+        } else {
+            document.getElementById("playerNameStatus").textContent = data.error || "Error updating name";
+        }
+    } catch (error) {
+        console.error("Error updating player name:", error);
+        document.getElementById("playerNameStatus").textContent = "Error updating name";
+    }
+}
 
 // Show the main game page (shown by default)
 function showPlay() {
@@ -23,7 +104,12 @@ function showStats() {
 }
 
 async function loadStats() {
-    const res = await fetch("/api/game/stats");
+    if (!currentPlayerID) {
+        document.getElementById("playerNameStatus").textContent = "No player loaded";
+        return;
+    }
+    
+    const res = await fetch(`/api/game/stats?playerID=${currentPlayerID}`);
     const stats = await res.json();
 
     const gamesPlayedCounter = document.getElementById("games-played-counter");
@@ -41,10 +127,15 @@ async function loadStats() {
 }
 
 async function startGame() {
+    if (!currentPlayerID) {
+        statusEl.textContent = "Error: No player is set";
+        return;
+    }
+    
     const res = await fetch("/api/game/start-game", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ difficulty: "easy" })
+        body: JSON.stringify({ difficulty: "easy", playerID: currentPlayerID })
     });
 
     const data = await res.json();

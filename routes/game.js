@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { getStats } = require('../logic/stats.js');
+const { getStats, createPlayer, updatePlayerName, getPlayer } = require('../logic/stats.js');
 
 const {Game} = require('../logic/game.js');
 const app = express.Router();
@@ -15,6 +15,12 @@ app.post('/start-game', (req, res) => {
     try {
         console.log(req.body.difficulty)
         const difficulty = req.body.difficulty || 'easy'; // Use easy as a default difficulty incase none is specified
+        const playerID = req.body.playerID; // Get playerID from request
+        
+        if (!playerID) {
+            return res.status(400).json({ error: "Player ID is required" });
+        }
+        
         console.log(difficulty)
         console.log(`Is valid: ${validateDifficultyString(difficulty)}`)
         if (!validateDifficultyString(difficulty)) {
@@ -22,7 +28,7 @@ app.post('/start-game', (req, res) => {
         }
         const gameId = Date.now().toString(); // Unique ID based on current timestamp. Not suitable long-term, but will work for now
 
-        games[gameId] = new Game(difficulty);
+        games[gameId] = new Game(difficulty, playerID);
         return res.json({ gameId, message: 'Game started' });
     } catch (error) {
         console.error('Error starting game:', error);
@@ -122,8 +128,63 @@ app.get("/get-game-state", (req, res) => { // Endpoint to retrieve the current g
 
 
 app.get("/stats", (req, res) => { // Endpoint to retrieve game statistics
-    const stats = getStats(); // Retrieve stats using the function in stats.js
-    res.json(stats);
+    try {
+        const { playerID } = req.query;
+        if (!playerID) {
+            return res.status(400).json({ error: "Player ID is missing" });
+        }
+        const stats = getStats(parseInt(playerID)); // Retrieve stats using the function in stats.js
+        res.json(stats);
+    } catch (error) {
+        console.error('Error fetching stats:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Player management endpoints
+app.post("/create-player", (req, res) => {
+    try {
+        const { displayName } = req.body;
+        if (!displayName) {
+            return res.status(400).json({ error: "Display name is required" });
+        }
+        const playerID = createPlayer(displayName);
+        res.json({ playerID, displayName });
+    } catch (error) {
+        console.error('Error creating player:', error);
+        res.status(400).json({ error: 'Invalid display name.' });
+    }
+});
+
+app.put("/update-player-name", (req, res) => {
+    try {
+        const { playerID, displayName } = req.body;
+        if (!playerID || !displayName) {
+            return res.status(400).json({ error: "Player ID and display name are required" });
+        }
+        updatePlayerName(parseInt(playerID), displayName);
+        res.json({ success: true, displayName });
+    } catch (error) {
+        console.error('Error updating player name:', error);
+        res.status(400).json({ error: 'Invalid display name.' });
+    }
+});
+
+app.get("/player", (req, res) => {
+    try {
+        const { playerID } = req.query;
+        if (!playerID) {
+            return res.status(400).json({ error: "Player ID is missing" });
+        }
+        const player = getPlayer(parseInt(playerID));
+        if (!player) {
+            return res.status(404).json({ error: "Player not found" });
+        }
+        res.json(player);
+    } catch (error) {
+        console.error('Error fetching player:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 module.exports = app;
