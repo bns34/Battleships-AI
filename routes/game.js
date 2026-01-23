@@ -46,7 +46,6 @@ app.post('/place-ship', (req, res) => { // Endpoint used when the player places 
         return res.status(400).json({ error: result.message }); // Return 400 if something is wrong
     }
     res.json(result);
-    console.log(`Boards:\nPlayer Board: ${JSON.stringify(game.playerBoard)}\nAI Board: ${JSON.stringify(game.aiBoard)}`);
 });
 
 app.post("/player-move", (req, res) => { // Endpoint used when the player makes a move
@@ -58,7 +57,6 @@ app.post("/player-move", (req, res) => { // Endpoint used when the player makes 
     if (result.error) {
         return res.status(400).json({ error: result.error }); // Return 400 if there was an error
     }
-    console.log(`Boards:\nPlayer Board: ${JSON.stringify(game.playerBoard)}\nAI Board: ${JSON.stringify(game.aiBoard)}`);
     if (!game.gameOver) {
         // If the game isn't over, immediately make the AI's move and return the result to the user
         const aiResult = game.aiMove(); 
