@@ -88,16 +88,24 @@ class Game {
             return { error: "Invalid coordinates" };
         }
 
-        if (this.aiBoard.grid[row][col] === "hit" || this.aiBoard.grid[row][col] === "miss") { // Prevent attacking the same grid square twice
+        if (this.aiBoard.grid[row][col] === 3 || this.aiBoard.grid[row][col] === 2) { // Prevent attacking the same grid square twice
             return { error: "Cell already attacked" }; // Return a error message to the client
         }
 
+        /*
+            0 = water
+            1 = ship present
+            2 = missed attack
+            3 = hit ship
+            4 = sunk ship
+        */
+
         let result = "miss"; // Set default result as miss
         if (this.aiBoard.grid[row][col] === 1) { // 1 indicates a ship is present in that coordinate
-            this.aiBoard.grid[row][col] = "hit"; // Mark the grid square as hit - currently mixing data types but will work for testing purposes
+            this.aiBoard.grid[row][col] = 3; // Mark the grid square as hit
             result = "hit"; // Update result to hit
         } else {
-            this.aiBoard.grid[row][col] = "miss"; // Mark the grid square as miss
+            this.aiBoard.grid[row][col] = 2; // Mark the grid square as miss
         }
 
         this.isPlayerTurn = false; // Set the player turn to false, indicating it's the AI's turn
@@ -127,10 +135,10 @@ class Game {
         const { row, col } = move;
         let result = "miss";
         if (this.playerBoard.grid[row][col] === 1) { // Indicates a ship is present
-            this.playerBoard.grid[row][col] = "hit"; // Mark the grid square as hit
+            this.playerBoard.grid[row][col] = 3; // Mark the grid square as hit
             result = "hit";
         } else {
-            this.playerBoard.grid[row][col] = "miss";
+            this.playerBoard.grid[row][col] = 2;
         }
 
         this.isPlayerTurn = true;

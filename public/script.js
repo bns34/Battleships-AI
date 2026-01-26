@@ -172,8 +172,8 @@ function renderBoard(table, grid, isEnemy) {
             const cell = document.createElement("td"); // td = table data cell
             const value = grid[r][c];
 
-            if (value === "hit") cell.className = "hit";
-            else if (value === "miss") cell.className = "miss";
+            if (value === 3) cell.className = "hit";
+            else if (value === 2) cell.className = "miss";
             else if (value === 1 && !isEnemy) cell.className = "ship";
             else cell.className = "water";
 

@@ -5,7 +5,7 @@ function aiMoveEasy(grid) { // Random targetting
     // While the chosen grid square has already been attacked, repeat the random selection
     console.log(`AI selecting row ${row}, col ${col}`);
     console.log(grid[row][col]);
-    while (grid[row][col] === "hit" || grid[row][col] === "miss") {
+    while (grid[row][col] === 3 || grid[row][col] === 2) {
         row = Math.floor(Math.random() * grid.length);
         col = Math.floor(Math.random() * grid.length);
     }
@@ -17,7 +17,7 @@ function aiMoveMed(grid) { // Grid targetting - attacks adjacent cells of hits
     const hits = [];
     for (let r = 0; r < grid.length; r++) {
         for (let c = 0; c < grid[r].length; c++) {
-            if (grid[r][c] === "hit") { // The cell is hit (not sunk though)
+            if (grid[r][c] === 3) { // The cell is hit (not sunk though)
                 hits.push({ row: r, col: c }); // Put the coordinates in the hits array
             }
         }
@@ -41,8 +41,8 @@ function aiMoveMed(grid) { // Grid targetting - attacks adjacent cells of hits
                     direction.row < grid.length && // Row in range (upper bound)
                     direction.col >= 0 && // Column in range (lower bound)
                     direction.col < grid[direction.row].length && // Column in range (upper bound)
-                    grid[direction.row][direction.col] !== "hit" &&  // Not already hit
-                    grid[direction.row][direction.col] !== "miss") // Not already missed
+                    grid[direction.row][direction.col] !== 3 &&  // Not already hit
+                    grid[direction.row][direction.col] !== 2) // Not already missed
                     {
                         adjacentCells.push(direction); // Add to potential target list
                     }
@@ -61,8 +61,8 @@ function aiMoveMed(grid) { // Grid targetting - attacks adjacent cells of hits
     for (let r = 0; r < grid.length; r++) {
         for (let c = 0; c < grid[r].length; c++) {
             if ((r + c) % 2 === 0 && 
-                grid[r][c] !== "hit" && 
-                grid[r][c] !== "miss") {
+                grid[r][c] !== 3 && 
+                grid[r][c] !== 2) {
                 checkerboardCells.push({ row: r, col: c });
             }
         }
