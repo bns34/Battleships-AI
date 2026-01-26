@@ -1,5 +1,5 @@
 const { generateShips, validateShipPlacement } = require('./ships');
-const { aiMoveEasy } = require('./ai');
+const { aiMoveEasy, aiMoveMed } = require('./ai');
 const { updateStats } = require('./stats');
 
 
@@ -113,8 +113,17 @@ class Game {
     // Function to process AI moves
     aiMove() {
         if (this.gameOver) return { result: "Game already over" }; // Make sure AI doesn't move if game is over
-        const move = aiMoveEasy(this.playerBoard.grid); // Returns a row and column
 
+        const difficulty = this.difficulty;
+
+        let move;
+        if(difficulty === "easy") {
+            move = aiMoveEasy(this.playerBoard.grid); // Returns a row and column
+        } else if (difficulty === "medium") {
+            move = aiMoveMed(this.playerBoard.grid);
+        }
+        // Move shouldnt ever be undefined so a fallback isnt necessary
+        
         const { row, col } = move;
         let result = "miss";
         if (this.playerBoard.grid[row][col] === 1) { // Indicates a ship is present
