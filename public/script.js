@@ -131,11 +131,13 @@ async function startGame() {
         statusEl.textContent = "Error: No player is set";
         return;
     }
+
+    const difficulty = document.getElementById("difficultySelect").value.toLowerCase();
     
     const res = await fetch("/api/game/start-game", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ difficulty: "easy", playerID: currentPlayerID })
+        body: JSON.stringify({ difficulty: difficulty, playerID: currentPlayerID })
     });
 
     const data = await res.json();
