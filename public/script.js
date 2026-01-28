@@ -173,6 +173,7 @@ function renderBoard(table, grid, isEnemy) {
             const value = grid[r][c];
 
             if (value === 3) cell.className = "hit";
+            else if (value === 4) cell.className = "sunk";
             else if (value === 2) cell.className = "miss";
             else if (value === 1 && !isEnemy) cell.className = "ship";
             else cell.className = "water";

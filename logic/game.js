@@ -78,6 +78,35 @@ class Game {
         return { success: true, message: "" }; // A message isnt really relevant if its successful
     }
 
+    checkAndUpdateSunkShips(board) {
+        for (const ship of board.ships) {
+            let hitCount = 0;
+            for (let i = 0; i < ship.size; i++) {
+                let r = ship.row;
+                let c = ship.col;
+                if (ship.orientation === "H"){
+                    c += i;
+                } else {
+                    r += i;
+                }
+
+                if (board.grid[r][c] === 3) { // Check if that part of the ship is hit
+                    hitCount += 1;
+                }
+            }
+            if (hitCount === ship.size) { // All parts of the ship are hit
+                // Mark the ship as sunk on the grid
+                for (let i = 0; i < ship.size; i++) {
+                    let r = ship.row;
+                    let c = ship.col;
+                    if (ship.orientation === "H") c += i;
+                    else r += i;
+                    board.grid[r][c] = 4; // 4 indicates sunk ship
+                }
+            }
+        }
+    }
+
     // Function to process player move
     processPlayerMove(row, col) {
         if (!this.isPlayerTurn) return { error: "Not player's turn" }; // Prevent player from making two moves in a row
@@ -107,6 +136,8 @@ class Game {
         } else {
             this.aiBoard.grid[row][col] = 2; // Mark the grid square as miss
         }
+
+        this.checkAndUpdateSunkShips(this.aiBoard); // Check if any opponent ships are sunk after the move
 
         this.isPlayerTurn = false; // Set the player turn to false, indicating it's the AI's turn
         if (this.checkGameOver(this.aiBoard.grid)) { // Check if all AI ships are sunk
@@ -140,6 +171,8 @@ class Game {
         } else {
             this.playerBoard.grid[row][col] = 2;
         }
+
+        this.checkAndUpdateSunkShips(this.playerBoard); // Check if any player ships are sunk after the move
 
         this.isPlayerTurn = true;
         if (this.checkGameOver(this.playerBoard.grid)) { // Check if all player ships are sunk

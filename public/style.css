@@ -26,6 +26,10 @@ td {
   background-color: red;
 }
 
+.sunk {
+  background-color: rgb(98, 47, 0);
+}
+
 .miss {
   background-color: white;
 }
