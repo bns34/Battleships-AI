@@ -42,6 +42,7 @@ function aiMoveMed(grid) { // Grid targetting - attacks adjacent cells of hits
                     direction.col >= 0 && // Column in range (lower bound)
                     direction.col < grid[direction.row].length && // Column in range (upper bound)
                     grid[direction.row][direction.col] !== 3 &&  // Not already hit
+                    grid[direction.row][direction.col] !== 4 && // Not already sunk
                     grid[direction.row][direction.col] !== 2) // Not already missed
                     {
                         adjacentCells.push(direction); // Add to potential target list
@@ -62,6 +63,7 @@ function aiMoveMed(grid) { // Grid targetting - attacks adjacent cells of hits
         for (let c = 0; c < grid[r].length; c++) {
             if ((r + c) % 2 === 0 && 
                 grid[r][c] !== 3 && 
+                grid[r][c] !== 4 &&
                 grid[r][c] !== 2) {
                 checkerboardCells.push({ row: r, col: c });
             }
