@@ -27,15 +27,36 @@ function aiMoveMed(grid) { // Grid targetting - attacks adjacent cells of hits
     if (hits.length > 0) {
         const adjacentCells = [];
         
-        for (const hit of hits) { // Check all 4 adjacent cells
+        for (const hit of hits) {
+            // Detect ship orientation by checking for adjacent hits
+            let orientation = null; // Unknown as of now
+            
+            // Check for hit above or below (vertical orientation)
+            const hasVerticalHit = hits.some(h => h.col === hit.col && Math.abs(h.row - hit.row) === 1);
+            // That checks if any of the hits in the hits array share the same column and are one row different
+            
+            // Check for hit left or right (horizontal orientation)
+            const hasHorizontalHit = hits.some(h => h.row === hit.row && Math.abs(h.col - hit.col) === 1);
+            // That checks if any of the hits in the hits array share the same row and are one column different 
+
+            if (hasVerticalHit) {
+                orientation = 'V';
+            } else if (hasHorizontalHit) {
+                orientation = 'H';
+            } // Otherwise the orientation is still unknown
+            
             const directions = [
-                { row: hit.row - 1, col: hit.col }, // up
-                { row: hit.row + 1, col: hit.col }, // down
-                { row: hit.row, col: hit.col - 1 }, // left
-                { row: hit.row, col: hit.col + 1 }  // right
+                { row: hit.row - 1, col: hit.col, orientationType: 'V' }, // up
+                { row: hit.row + 1, col: hit.col, orientationType: 'V' }, // down
+                { row: hit.row, col: hit.col - 1, orientationType: 'H' }, // left
+                { row: hit.row, col: hit.col + 1, orientationType: 'H' }  // right
             ];
             
-            for (const direction of directions) { 
+            for (const direction of directions) {
+                if (orientation && direction.orientationType !== orientation) {
+                    continue; // Skip this direction if orientation is known and doesnt match orientationType
+                }
+                
                 // Check if the cell is within bounds and isnt already attacked
                 if (direction.row >= 0 &&  // Row in range (lower bound)
                     direction.row < grid.length && // Row in range (upper bound)
@@ -44,9 +65,10 @@ function aiMoveMed(grid) { // Grid targetting - attacks adjacent cells of hits
                     grid[direction.row][direction.col] !== 3 &&  // Not already hit
                     grid[direction.row][direction.col] !== 4 && // Not already sunk
                     grid[direction.row][direction.col] !== 2) // Not already missed
-                    {
-                        adjacentCells.push(direction); // Add to potential target list
-                    }
+                {
+                    // Validation passed
+                    adjacentCells.push({ row: direction.row, col: direction.col }); // Add to potential target list
+                }
             }
         }
         
