@@ -13,7 +13,6 @@ function validateDifficultyString(difficulty){
 
 app.post('/start-game', (req, res) => {
     try {
-        console.log(req.body.difficulty)
         const difficulty = req.body.difficulty || 'easy'; // Use easy as a default difficulty incase none is specified
         const playerID = req.body.playerID; // Get playerID from request
         
@@ -21,8 +20,6 @@ app.post('/start-game', (req, res) => {
             return res.status(400).json({ error: "Player ID is required" });
         }
         
-        console.log(difficulty)
-        console.log(`Is valid: ${validateDifficultyString(difficulty)}`)
         if (!validateDifficultyString(difficulty)) {
             return res.status(400).json({ error: "Invalid difficulty level" });
         }
