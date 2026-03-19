@@ -7,7 +7,7 @@ const app = express.Router();
 let games = {}; // Store active games in memory
 
 function validateDifficultyString(difficulty){
-    const validDifficulties = ['easy', 'medium', 'hard']; // Currently only easy is implemented
+    const validDifficulties = ['easy', 'medium']; // Currently only easy and medium is implemented
     return validDifficulties.includes(difficulty);
 }
 
